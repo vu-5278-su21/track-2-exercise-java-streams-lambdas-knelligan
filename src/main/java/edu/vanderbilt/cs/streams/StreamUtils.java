@@ -1,6 +1,7 @@
 package edu.vanderbilt.cs.streams;
 
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
@@ -38,7 +39,12 @@ public class StreamUtils {
         // 3. List.subLIst will be useful to you
         // 4. A windowSize < 1 should return an empty stream
 
-        return Stream.empty();
+        if(windowSize <= 0) {
+            return Stream.empty();
+        }else{
+            return IntStream.range(0, data.size()- windowSize + 1)
+            .mapToObj(start -> data.subList(start, start + windowSize));
+        }
     }
 
     /**
@@ -69,7 +75,13 @@ public class StreamUtils {
             // You need to update this code here to
             // return the average of the property that
             // is extracted with the function `f`
-            return 0.0;
+            OptionalDouble average = window.stream()
+                    .mapToDouble(f)
+                    .average();
+                    
+                    Double averageConvert = average.getAsDouble();
+                    
+                        return averageConvert;
         };
     }
 
