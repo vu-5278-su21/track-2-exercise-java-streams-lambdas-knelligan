@@ -1,6 +1,8 @@
 package edu.vanderbilt.cs.streams;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
@@ -38,7 +40,12 @@ public class StreamUtils {
         // 3. List.subLIst will be useful to you
         // 4. A windowSize < 1 should return an empty stream
 
-        return Stream.empty();
+        if(windowSize <= 0) {
+            return Stream.empty();
+        }else{
+            return IntStream.range(0, data.size()- windowSize + 1)
+            .mapToObj(start -> data.subList(start, start + windowSize));
+        }
     }
 
     /**
@@ -69,8 +76,37 @@ public class StreamUtils {
             // You need to update this code here to
             // return the average of the property that
             // is extracted with the function `f`
-            return 0.0;
+            OptionalDouble average = window.stream()
+                    .mapToDouble(f)
+                    .average();
+                    
+                    Double averageConvert = average.getAsDouble();
+                    
+                        return averageConvert;
         };
     }
+    public static <T>BikeRide.LatLng firstLatLng(List<BikeRide.DataFrame> df){
+
+        Optional<BikeRide.DataFrame> firstFrame = df.stream()
+            .findFirst();
+
+        if(firstFrame.isPresent()){
+            BikeRide.DataFrame convertedFrame = (BikeRide.DataFrame)(firstFrame.get());
+            BikeRide.LatLng latLngValue = convertedFrame.getCoordinate();
+            return latLngValue;
+        }else{
+            return null;   
+        }
+
+    };
+
+    public static BikeRide.LatLng getLatLng(BikeRide.DataFrame df) {
+        if(df.getVelocity() == 0.0){
+            return df.getCoordinate(); 
+        }else{
+            return null;   
+        }
+
+    }    
 
 }

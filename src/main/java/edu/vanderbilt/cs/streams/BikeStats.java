@@ -1,5 +1,7 @@
 package edu.vanderbilt.cs.streams;
 
+import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +12,8 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.vanderbilt.cs.streams.BikeRide.LatLng;
 
@@ -42,7 +46,25 @@ public class BikeStats {
      * @return
      */
     public Stream<BikeRide.DataFrame> averagedDataFrameStream(int windowSize){
-        return Stream.empty();
+        //create bikeride object
+        BikeRide br = loadRide();
+
+        //create list to store dataframes in
+        List<BikeRide.DataFrame> dfList = new ArrayList<>();
+
+        //create a list of dataframes to use with window method
+        dfList = br.fusedFramesStream()
+        .collect(Collectors.toList());
+
+        //return a stream of dataframes with averages and first latlng
+        return   StreamUtils.slidingWindow(dfList, windowSize)
+        .map(df -> new BikeRide.DataFrame(StreamUtils.firstLatLng(df),
+                    StreamUtils.averageOfProperty(BikeRide.DataFrame::getGrade).apply(df), 
+                    StreamUtils.averageOfProperty(BikeRide.DataFrame::getAltitude).apply(df), 
+                    StreamUtils.averageOfProperty(BikeRide.DataFrame::getVelocity).apply(df),
+                    StreamUtils.averageOfProperty(BikeRide.DataFrame::getHeartRate).apply(df)));
+
+
     }
 
     // @ToDo:
@@ -57,7 +79,29 @@ public class BikeStats {
     // the same.
     //
     public Stream<LatLng> locationsOfStops() {
-        return Stream.empty();
+        //create bikeride object
+        BikeRide br = loadRide();
+
+        //create list to store dataframes in
+        List<BikeRide.DataFrame> dfList = new ArrayList<>();
+        
+        //create a list of dataframes to use with window method
+        dfList = br.fusedFramesStream()
+        .collect(Collectors.toList());
+        
+        //return lat/lng list
+         return  dfList.stream()
+        .map(i -> StreamUtils.getLatLng(i))
+        .filter(coord -> coord != null);
+    }
+    
+    public static BikeRide loadRide() {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            return mapper.readValue(new FileInputStream("src/main/resources/data.json"), BikeRide.class);
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
     }
 
 }

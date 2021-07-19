@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -125,7 +126,8 @@ public class BikeRide {
     // Hint: see Arrays.stream(...)
     //
     public DoubleStream heartRateStream() {
-        return DoubleStream.empty();
+        DoubleStream stream = Arrays.stream(heartRate);
+        return stream;
     }
 
     // @ToDo:
@@ -134,7 +136,8 @@ public class BikeRide {
     // stream of the specified values
     //
     public DoubleStream velocityStream() {
-        return DoubleStream.empty();
+        DoubleStream stream = Arrays.stream(velocity);
+        return stream;
     }
 
     // @ToDo:
@@ -142,7 +145,8 @@ public class BikeRide {
     // Implement this method so it returns a
     // stream of the specified values
     public DoubleStream gradeStream() {
-        return DoubleStream.empty();
+        DoubleStream stream = Arrays.stream(grade);
+        return stream;
     }
 
     // @ToDo:
@@ -150,7 +154,8 @@ public class BikeRide {
     // Implement this method so it returns a
     // stream of the specified values
     public DoubleStream altitudeStream() {
-        return DoubleStream.empty();
+        DoubleStream stream = Arrays.stream(altitude);
+        return stream;
     }
 
     // @ToDo:
@@ -158,7 +163,8 @@ public class BikeRide {
     // Implement this method so it returns a
     // stream of the specified values
     public Stream<LatLng> coordinateStream() {
-        return Stream.empty();
+        Stream<LatLng> stream = Arrays.stream(coordinates);
+        return stream;
     }
 
 
@@ -171,7 +177,12 @@ public class BikeRide {
     // data arrays (e.g., heartRate, velocity, etc.)
     //
     public Stream<DataFrame> fusedFramesStream() {
-        return Stream.empty();
+        List<DataFrame> list = new ArrayList<>();
+        list = IntStream.range(0, heartRate.length)
+        .mapToObj(i -> new DataFrame(coordinates[i], grade[i], altitude[i], velocity[i], heartRate[i]))
+        .collect(Collectors.toList());
+        
+        return list.stream();
     }
 
 
