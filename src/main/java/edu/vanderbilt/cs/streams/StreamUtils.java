@@ -1,6 +1,7 @@
 package edu.vanderbilt.cs.streams;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
@@ -84,5 +85,28 @@ public class StreamUtils {
                         return averageConvert;
         };
     }
+    public static <T>BikeRide.LatLng firstLatLng(List<BikeRide.DataFrame> df){
+
+        Optional<BikeRide.DataFrame> firstFrame = df.stream()
+            .findFirst();
+
+        if(firstFrame.isPresent()){
+            BikeRide.DataFrame convertedFrame = (BikeRide.DataFrame)(firstFrame.get());
+            BikeRide.LatLng latLngValue = convertedFrame.getCoordinate();
+            return latLngValue;
+        }else{
+            return null;   
+        }
+
+    };
+
+    public static BikeRide.LatLng getLatLng(BikeRide.DataFrame df) {
+        if(df.getVelocity() == 0.0){
+            return df.getCoordinate(); 
+        }else{
+            return null;   
+        }
+
+    }    
 
 }
