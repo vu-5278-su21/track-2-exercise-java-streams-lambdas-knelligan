@@ -98,7 +98,7 @@ public class BikeStats {
     public static BikeRide loadRide() {
         try {
             ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(new FileInputStream("data.json"), BikeRide.class);
+            return mapper.readValue(new FileInputStream("src/main/resources/data.json"), BikeRide.class);
         } catch (Exception e){
             throw new RuntimeException(e);
         }
